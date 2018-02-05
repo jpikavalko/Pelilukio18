@@ -42,6 +42,13 @@ public class Movement : MonoBehaviour {
             count++;
             SetScore();
         }
+
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            gameObject.SetActive(false);
+            winText.text = "You lose";
+            ShowRestart();
+        }
     }
 
     void SetScore()
@@ -49,8 +56,13 @@ public class Movement : MonoBehaviour {
         scoreText.text = "Score: " + count.ToString();
         if (count >= maxCubes)
         {
-            playAgain.gameObject.SetActive(true);
+            ShowRestart();
             winText.text = "You win";
         }
+    }
+
+    void ShowRestart()
+    {
+        playAgain.gameObject.SetActive(true);
     }
 }

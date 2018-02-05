@@ -14,4 +14,6 @@ public class RestartLevel : MonoBehaviour {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         //Application.LoadLevel(0);
     }
+
+
 }
