@@ -59,4 +59,13 @@ public class Movement : MonoBehaviour
         transform.Translate(h * newSpeed, 0f, v * newSpeed);
     }
 
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Ball")
+        {
+
+            
+        }
+    }
+
 }
