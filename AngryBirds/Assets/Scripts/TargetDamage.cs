@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TargetDamage : MonoBehaviour {
 
-    Rigidbody2D rigidbody;
-    BoxCollider2D collider;
+    static private int birdsLeft;
+
+    Rigidbody2D rb;
+    BoxCollider2D boxCollider;
     public int hitPoints = 2;
     public Sprite damageSprite;
     public float damageImpactSpeed;
@@ -17,8 +20,10 @@ public class TargetDamage : MonoBehaviour {
 
     void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
-        collider = GetComponent<BoxCollider2D>();
+        birdsLeft = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        //Debug.Log(birdsLeft);
+        rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
 	void Start () {
@@ -43,14 +48,19 @@ public class TargetDamage : MonoBehaviour {
         if (currentHitPoints <= 0)
         {
             Kill();
+
+            if (birdsLeft < 1)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
+            }
         }
     }
 
     void Kill()
     {
         spriteRenderer.enabled = false;
-        collider.enabled = false;
-        rigidbody.isKinematic = true;
+        boxCollider.enabled = false;
+        rb.isKinematic = true;
         //particle system if wanted
     }
 }

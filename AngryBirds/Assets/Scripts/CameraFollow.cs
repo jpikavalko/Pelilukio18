@@ -4,15 +4,33 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-    public Transform projectile;
+    public Transform projectile, projectile2, projectile3;
     public Transform farLeft;
     public Transform farRight;
+    public int lifesLeft = 3;
 
 	void Update () {
+        switch (lifesLeft)
+        {
+            case 3:
+                UpdatePosition(projectile);
+                break;
+            case 2:
+                UpdatePosition(projectile2);
+                break;
+            case 1:
+                UpdatePosition(projectile3);
+                break;
+        }
+        
+	}
+
+    void UpdatePosition(Transform projectile)
+    {
         Vector3 newPosition = transform.position;
         newPosition.x = projectile.position.x;
         newPosition.x = Mathf.Clamp(newPosition.x, farLeft.position.x, farRight.position.x);
         transform.position = newPosition;
-	}
+    }
 
 }
