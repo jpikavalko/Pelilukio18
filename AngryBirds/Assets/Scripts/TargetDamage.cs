@@ -48,6 +48,7 @@ public class TargetDamage : MonoBehaviour {
         if (currentHitPoints <= 0)
         {
             Kill();
+            birdsLeft--;
 
             if (birdsLeft < 1)
             {
