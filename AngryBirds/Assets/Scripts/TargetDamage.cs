@@ -7,9 +7,12 @@ public class TargetDamage : MonoBehaviour {
 
     static private int birdsLeft;
 
+    ScoreManager scoreManager;
+
     Rigidbody2D rb;
     BoxCollider2D boxCollider;
     public int hitPoints = 2;
+    public int scorePoints = 10;
     public Sprite damageSprite;
     public float damageImpactSpeed;
 
@@ -20,6 +23,7 @@ public class TargetDamage : MonoBehaviour {
 
     void Awake()
     {
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
         birdsLeft = GameObject.FindGameObjectsWithTag("Enemy").Length;
         //Debug.Log(birdsLeft);
         rb = GetComponent<Rigidbody2D>();
@@ -59,6 +63,7 @@ public class TargetDamage : MonoBehaviour {
 
     void Kill()
     {
+        scoreManager.AddPoints(scorePoints);
         spriteRenderer.enabled = false;
         boxCollider.enabled = false;
         rb.isKinematic = true;
