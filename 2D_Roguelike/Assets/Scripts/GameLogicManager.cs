@@ -6,6 +6,9 @@ public class GameLogicManager : MonoBehaviour {
 
     public static GameLogicManager instance = null;
     public BoardManager boardScript;
+    public int playerFoodPoints = 100; //added clip 9
+    [HideInInspector]
+    public bool playersTurn = true;  //added clip 9
 
     private int level = 3;
 
@@ -29,6 +32,11 @@ public class GameLogicManager : MonoBehaviour {
         boardScript.SetupScene(level);
 	}
 	
+    public void GameOver()  //added clip 9
+    {
+        enabled = false; //disabloi GameManagerin
+    }
+
 	void Update () {
 		
 	}
