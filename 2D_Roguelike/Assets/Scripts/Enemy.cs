@@ -11,22 +11,16 @@ using System.Collections;
     private Transform target; //Transform to attempt to move toward each turn.
     private bool skipMove; //Boolean to determine whether or not enemy should skip a turn or move this turn.
     //vihu liikkuu joka toinen vuoro
-
+    public AudioClip enemyAttack1; // added clip 13
+    public AudioClip enemyAttack2; // added clip 13
 
     //Start overrides the virtual Start function of the base class.
     protected override void Start()
     {
-        //Register this enemy with our instance of GameManager by adding it to a list of Enemy objects. 
-        //This allows the GameManager to issue movement commands.
-        //GameLogicManager.instance.AddEnemyToList(this); //this later
+        GameLogicManager.instance.AddEnemyToList(this); //added clip 11
 
-        //Get and store a reference to the attached Animator component.
         animator = GetComponent<Animator>();
-
-        //Find the Player GameObject using it's tag and store a reference to its transform component.
         target = GameObject.FindGameObjectWithTag("Player").transform;
-
-        //Call the start function of our base class MovingObject.
         base.Start();
     }
 
@@ -82,11 +76,8 @@ using System.Collections;
         //Declare hitPlayer and set it to equal the encountered component.
         Player hitPlayer = component as Player;
 
-        //Call the LoseFood function of hitPlayer passing it playerDamage, the amount of foodpoints to be subtracted.
         hitPlayer.LoseFood(playerDamage);
-
-        //Set the attack trigger of animator to trigger Enemy attack animation.
-        animator.SetTrigger("enemyAttack");
-
+        animator.SetTrigger("enemyAttack"); //added clip 11
+        SoundManager.instance.RandomizeSoundEffect(enemyAttack1, enemyAttack2); // added clip 13
     }
 }

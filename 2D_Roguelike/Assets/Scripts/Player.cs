@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;      //Allows us to use SceneManager
+using UnityEngine.UI; //added clip 12
 
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
 public class Player : MovingObject
@@ -9,7 +10,16 @@ public class Player : MovingObject
     public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
     public int pointsPerSoda = 20;              //Number of points to add to player food points when picking up a soda object.
     public int wallDamage = 1;                  //How much damage a player does to a wall when chopping it.
+    public Text foodText; //added clip 12
 
+    // added clip 13
+    public AudioClip moveSound1;
+    public AudioClip moveSound2;
+    public AudioClip eatSound1;
+    public AudioClip eatSound2;
+    public AudioClip drinkSound1;
+    public AudioClip drinkSound2;
+    public AudioClip gameOverSound;
 
     private Animator animator;                  //Used to store a reference to the Player's animator component.
     private int food;                           //Used to store player food points total during level.
@@ -23,6 +33,7 @@ public class Player : MovingObject
 
         //Get the current food point total stored in GameManager.instance between levels.
         food = GameLogicManager.instance.playerFoodPoints;
+        foodText.text = "Food " + food;
 
         //Call the Start function of the MovingObject base class.
         base.Start();
@@ -33,24 +44,45 @@ public class Player : MovingObject
     private void OnDisable()
     {
         //When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
-        GameLogicManager.instance.playerFoodPoints = food;
+        //GameLogicManager.instance.playerFoodPoints = food;
     }
 
 
     private void Update()
     {
         //If it's not the player's turn, exit the function.
-        if (!GameLogicManager.instance.playersTurn) return;
+        //if (!GameLogicManager.instance.playersTurn) return;
 
         int horizontal = 0;     //Used to store the horizontal move direction.
         int vertical = 0;       //Used to store the vertical move direction.
 
 
         //Get input from the input manager, round it to an integer and store in horizontal to set x axis move direction
-        horizontal = (int)(Input.GetAxisRaw("Horizontal"));
+        //horizontal = (int)(Input.GetAxisRaw("Horizontal"));
 
         //Get input from the input manager, round it to an integer and store in vertical to set y axis move direction
-        vertical = (int)(Input.GetAxisRaw("Vertical"));
+        //vertical = (int)(Input.GetAxisRaw("Vertical"));
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            vertical = 1;
+            horizontal = 0;
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            vertical = -1;
+            horizontal = 0;
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            vertical = 0;
+            horizontal = -1;
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            vertical = 0;
+            horizontal = 1;
+        }
 
         //Check if moving horizontally, if so set vertical to zero.
         if (horizontal != 0)
@@ -73,6 +105,7 @@ public class Player : MovingObject
     {
         //Every time player moves, subtract from food points total.
         food--;
+        foodText.text = "Food: " + food; //added clip 12
 
         //Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
         base.AttemptMove<T>(xDir, yDir);
@@ -81,8 +114,9 @@ public class Player : MovingObject
         RaycastHit2D hit;
 
         //If Move returns true, meaning Player was able to move into an empty space.
-        if (Move(xDir, yDir, out hit))
+        if (Move(xDir, yDir, out hit))      // added clip 13
         {
+            SoundManager.instance.RandomizeSoundEffect(moveSound1, moveSound2);     // added clip 13
             //Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
         }
 
@@ -127,7 +161,8 @@ public class Player : MovingObject
         {
             //Add pointsPerFood to the players current food total.
             food += pointsPerFood;
-
+            foodText.text = "+" + pointsPerFood + "Food: " + food; //added clip 12
+            SoundManager.instance.RandomizeSoundEffect(eatSound1, eatSound2); // added clip 13
             //Disable the food object the player collided with.
             other.gameObject.SetActive(false);
         }
@@ -137,8 +172,8 @@ public class Player : MovingObject
         {
             //Add pointsPerSoda to players food points total
             food += pointsPerSoda;
-
-
+            foodText.text = "+" + pointsPerFood + "Food: " + food; //added clip 12
+            SoundManager.instance.RandomizeSoundEffect(drinkSound1, drinkSound2);
             //Disable the soda object the player collided with.
             other.gameObject.SetActive(false);
         }
@@ -163,6 +198,8 @@ public class Player : MovingObject
         //Subtract lost food points from the players total.
         food -= loss;
 
+        foodText.text = "-" + loss + " Food: " + food; //added clip 12
+
         //Check to see if game has ended.
         CheckIfGameOver();
     }
@@ -174,7 +211,8 @@ public class Player : MovingObject
         //Check if food point total is less than or equal to zero.
         if (food <= 0)
         {
-
+            SoundManager.instance.PlaySingle(gameOverSound);
+            SoundManager.instance.musicSource.Stop();
             //Call the GameOver function of GameManager.
             GameLogicManager.instance.GameOver();
         }
